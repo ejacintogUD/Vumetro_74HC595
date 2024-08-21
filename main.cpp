@@ -9,8 +9,8 @@
 
 //#define leds 3
 
-DigitalOut Ds(D2);
-DigitalOut SHCP(D3); // Clok flanco de subida
+DigitalOut Ds(D2);    // Entrada serial del registro de corrimiento
+DigitalOut SHCP(D3); // Clock flanco de subida
 DigitalOut STCP(D4); // Latch flanco de bajada
 
 AnalogIn Ain (A0);
