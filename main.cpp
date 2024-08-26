@@ -36,6 +36,7 @@ char leds=0;  //Variable donde se cargan los datos
 //protipos 
 void shift_data (void);
 void load_data (void);
+void clean(void);
 void send_data(void); // funcion del hilo
 
 
@@ -50,6 +51,8 @@ int main()
     SerialData  =0;
     RegisterClk =0;
     LatchClk    =0;
+    clean();
+    wait_us(1e6);
     // Encender los hilos
     T_send_data.start(send_data);
     while (true) 
@@ -65,14 +68,15 @@ void shift_data (int8_t data)
 {
      for(int i=0; i<8; i++)
         {
-            data = data>>1;
+           
             //if ((data & 0x01) == 0x01) SerialData = 1;
             //else                       SerialData = 0;              
             SerialData = ((data & 0x01) == 0x01) ? 1:0;
             RegisterClk=0;
             wait_us(1);
             RegisterClk=1;
-            wait_us(1); 
+            wait_us(0); 
+            data = data>>1;
         }
 }
 
@@ -83,13 +87,25 @@ void load_data(int8_t data)
     LatchClk=1;    
 }
 
+void clean(void)
+{
+    load_data(0x00);
+}
+
+
 void send_data (void)
 {
+    char data= 0x55;
     while(true)
-    {
-        load_data(0x55);
-        ThisThread::sleep_for(1s);
+    {  
+        data = ~data;
+        load_data(data);
+       
+        ThisThread::sleep_for(200ms);
+        
     }
 }
+
+
 
 
